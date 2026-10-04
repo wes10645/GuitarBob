@@ -12,3 +12,5 @@ sounddevice==0.4.7
 # basic-pitch: accurate note transcription (macOS only - uses coremltools)
 # Uncomment on Mac: pip install basic-pitch
 # basic-pitch
+# development: tests
+pytest
