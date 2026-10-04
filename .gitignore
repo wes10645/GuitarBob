@@ -1,3 +1,7 @@
+# Dependencies and build output
+node_modules/
+dist/
+
 # Python virtualenvs
 .venv/
 venv/
@@ -7,3 +11,13 @@ backend/.venv/
 # Python junk
 __pycache__/
 *.pyc
+
+# Audio users upload and the backend generates
+backend/storage/
+backend/uploads/
+backend/processed/
+
+# OS / editor
+.DS_Store
+.env
+.env.local
