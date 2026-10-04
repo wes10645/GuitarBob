@@ -1,71 +1,57 @@
-# GuitarBob 
+# GuitarBob
 
-**AI guitar tutor** – Upload a song, get chords & tabs, and learn with **Bob**,  your friendly Duolingo-style guitar buddy!
+**AI guitar tutor.** Upload a song to get its chords, tabs and a Guitar Hero-style note highway to practice with, guided by Bob, a Duolingo-style guitar buddy. A live mode listens to your guitar through an audio interface and shows the notes you play.
 
- Quick start
+Built in a 36-hour hackathon (Feb 21–22, 2026) by:
 
-You need **two terminals** – one for the backend, one for the frontend.
- 1. Backend (FastAPI)
+- **Wesley Chang**: React frontend (pages, chord diagrams, tab viewer, note highway, live transcription UI)
+- **Nathan Park**: Python backend (audio analysis, chord and note detection, live pitch streaming)
+
+## Features
+
+- **Upload**: drop in an MP3/WAV; the backend finds the tempo, chords and notes
+- **Results**: chord timeline, chord diagrams and tabs
+- **Practice**: scrolling note highway with 0.25x–1x playback speed
+- **Chords**: chord library with clickable diagrams and note names
+- **Live Transcribe**: play your guitar and see detected notes on a fretboard
+- **Tuner UI** and a character shop (Bob and Riff)
+
+## How it works
+
+- **Chords**: `librosa` computes chroma (how much of each of the 12 note names is present) and matches each slice against 24 major/minor chord templates, then smooths the result.
+- **Notes**: on macOS/Linux, Spotify's [basic-pitch](https://github.com/spotify/basic-pitch) neural network transcribes notes, which are mapped to string and fret. Otherwise, onset detection plus chroma is used.
+- **Live mode**: the backend reads the audio interface with `sounddevice`, detects pitch with the YIN algorithm and streams note events to the browser over a WebSocket.
+
+## Running locally
+
+You need Node.js, Python 3.10+ and [ffmpeg](https://ffmpeg.org/) on your PATH. Use two terminals.
+
+**1. Backend (FastAPI), port 8000**
 
 ```bash
 cd backend
-python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Mac/Linux
+python3 -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+pip install basic-pitch         # optional, macOS/Linux only: more accurate notes
 uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-#### Mac: accurate note transcription (basic-pitch)
+Check http://127.0.0.1:8000/health. `"basic_pitch": "enabled"` means note transcription will use basic-pitch.
 
-On **macOS**, for best note accuracy in Practice mode, install basic-pitch:
+**2. Frontend (React + Vite), port 5173**
 
-```bash
-cd backend
-source venv/bin/activate
-pip install basic-pitch
-```
-
-Then restart the backend. Check http://127.0.0.1:8000/health – it should show `"basic_pitch": "enabled"`.
-
-On Windows, basic-pitch is not supported (coremltools); the app uses chord-based notes instead.
-
-2. Frontend (React + Vite)
-
-In a **new terminal**:
+From the repository root:
 
 ```bash
-cd frontend
 npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). The frontend proxies API calls to the backend on port 8000.
+Open http://localhost:5173. The frontend calls the backend at `http://127.0.0.1:8000`; set `VITE_API_URL` to change it.
 
-What's inside
+**Live mode** needs an audio interface (a Focusrite Scarlett is picked automatically). List inputs at http://127.0.0.1:8000/devices and set `SCARLETT_DEVICE=<index>` to choose one.
 
-- **Landing** – Bob welcomes you; choose "Upload a song" or "Practice mode"
-- **Upload** – Drag & drop or pick an audio file (MP3, WAV, etc.)
-- **Processing** – Bob "listens" and shows a fun loading state
-- **Results** – Chords and tabs (mock data for now; plug in your API)
-- **Practice** – Step-by-step lesson with Bob guiding you through chords
+## Tech stack
 
-Front end stack
-
-- **React 18** + **Vite** + **Tailwind CSS**
-- **React Router** for navigation
-- **Bob** – SVG mascot with poses: default (wave), happy, thinking, teaching, listening, sad
-- Duolingo-like UI: Fredoka + Nunito, green/orange/blue palette, rounded buttons, speech bubbles, streak/hearts/XP bar
-
-Hardware note
-
-Use your **electric guitar + audio interface** to play along during Practice. (Audio input/recognition can be wired in later.)
-
-## Build
-
-```bash
-npm run build
-npm run preview
-```
-
-Have fun and rock on! 🎸
+React 18, Vite, Tailwind CSS, React Router, alphaTab · FastAPI, Uvicorn, librosa, NumPy, SciPy, sounddevice, basic-pitch, ffmpeg
