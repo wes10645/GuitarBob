@@ -11,6 +11,7 @@ import ChordDetail from './pages/ChordDetail';
 import CharacterShop from './pages/CharacterShop';
 import Tuner from './pages/Tuner';
 import LiveTranscribe from './pages/LiveTranscribe';
+import PitchLab from './pages/PitchLab';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/results" element={<Results />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/transcribe" element={<LiveTranscribe />} />
+          <Route path="/pitch-lab" element={<PitchLab />} />
           <Route path="/chord/:chordKey" element={<ChordDetail />} />
           <Route path="/visualizer" element={<Navigate to="/practice" replace />} />
         </Routes>

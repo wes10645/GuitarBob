@@ -182,6 +182,12 @@ export default function Home() {
           >
             Live Transcribe
           </Link>
+          <Link
+            to="/pitch-lab"
+            className="btn-bob-outline flex-1 text-center no-underline py-4"
+          >
+            Pitch Lab
+          </Link>
         </div>
         <p className="font-body text-sm text-gray-500 mt-8 text-center">
           {dialogue.cta}

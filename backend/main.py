@@ -9,6 +9,7 @@ from uuid import uuid4
 from pathlib import Path
 import asyncio
 import sys
+import time
 
 from dsp.audio_io import save_upload_and_convert_to_wav
 from dsp.analyze_song import analyze_wav_for_chords
@@ -91,6 +92,26 @@ async def websocket_live(websocket: WebSocket):
         pass
     except Exception:
         try:
+            await websocket.close()
+        except Exception:
+            pass
+
+
+@app.websocket("/ws/pitch")
+async def websocket_pitch(websocket: WebSocket, source: str = "sim"):
+    """Real-time pitch stream (FFT autocorrelation), ~47 events/sec.
+    source=sim plays a simulated guitar (no hardware needed); source=device reads the audio interface."""
+    await websocket.accept()
+    from dsp.pitch_stream import pitch_events
+    try:
+        async for event in pitch_events("device" if source == "device" else "sim"):
+            event["sent_at"] = time.time()
+            await websocket.send_json(event)
+    except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        try:
+            await websocket.send_json({"error": str(e)})
             await websocket.close()
         except Exception:
             pass

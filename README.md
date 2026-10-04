@@ -14,6 +14,7 @@ Built in a 36-hour hackathon (Feb 21–22, 2026) by:
 - **Practice**: scrolling note highway with 0.25x–1x playback speed
 - **Chords**: chord library with clickable diagrams and note names
 - **Live Transcribe**: play your guitar and see detected notes on a fretboard
+- **Pitch Lab** (prototype branch): real-time FFT-autocorrelation pitch detection, ~47 updates/sec, with live latency stats. See [docs/REALTIME_PITCH.md](docs/REALTIME_PITCH.md)
 - **Tuner UI** and a character shop (Bob and Riff)
 
 ## How it works
